@@ -1,0 +1,27 @@
+# Projet specific files
+SockMud.depend
+SockMud.cbp
+bin/Debug/*
+obj/Debug/*
+bin/Release/*
+obj/Release/*
+
+# Object files
+*.o
+*.obj
+
+# Temp / Backup files
+*~
+*.bak
+*.save
+*.orig
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.z
