@@ -1,6 +1,7 @@
 # Projet specific files
 SockMud.depend
 SockMud.cbp
+Mud.cbp
 bin/Debug/*
 obj/Debug/*
 bin/Release/*
