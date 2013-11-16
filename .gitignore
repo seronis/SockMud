@@ -2,6 +2,7 @@
 SockMud.depend
 SockMud.layout
 SockMud.cbp
+Mud.cbp
 bin/Debug/*
 obj/Debug/*
 bin/Release/*
