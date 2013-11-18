@@ -1,14 +1,3 @@
-// ****************************************************************************
-// SocketMud II Copyright 2004 Brian Graversen
-// ****************************************************************************
-// Revision History
-// ----------------
-// 19/01/04) Initial server code released
-// ****************************************************************************
-// This product can be used freely as long as this copyright header remains
-// intact. This header may not be removed or changed, and any work released
-// based on this code must contain this header information in all files.
-// ****************************************************************************
 
 #ifndef HEADER_SERVER
 #define HEADER_SERVER
@@ -21,6 +10,7 @@
 
 // local headers
 #include "socket.h"
+#include "session.h"
 
 class Server
 {
@@ -28,18 +18,20 @@ public:
 	Server( void );
 	~Server( void );
 
-	bool                 Connect( int port );
+	bool                 Listen( int port );
 	void                 FlushSockets( void );
 	bool                 PollSockets( void );
 	void                 Sleep( int pps );
 	std::list<Socket*>   GetSocketList( void );
+	std::list<Session*>  GetSessionList( void );
 
 private:
 	void                 Accept( void );
 	void                 CloseSocket( Socket *pSocket );
 
-	std::list<Socket*>   socketList;
-	int                  control;
+	std::list<Socket*>	socketList;
+	std::list<Session*>	sessionList;
+	int                  listenersock_id;
 	fd_set               fSet;
 	fd_set               rSet;
 	sockaddr_in          my_addr;

@@ -10,19 +10,19 @@
 // based on this code must contain this header information in all files.
 // ****************************************************************************
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <string>
+#include <iostream>
+
 #include "server.h"
+#include "session.h"
 
 int main( int argc, char** argv )
 {
-	Server *mServer = new Server();
 	int port;
 
 	switch( argc ) {
 	case 2:
-		port = atoi( argv[1] );
+		port = std::stoi( argv[1] );
 
 		if( port < 1024 || port > 9999 ) {
 			printf( "[port] must be between 1024 and 9999\n" );
@@ -36,23 +36,32 @@ int main( int argc, char** argv )
 		return 1;
 	}
 
-	if( mServer->Connect( port ) == false )
+	Server *mServer = new Server();
+	if( mServer->Listen( port ) == false )
 		return 1;
 
+	std::string str_splash;
+	str_splash += "Welcome to the server.\n";
+	str_splash += " - \n";
+	str_splash += " and stuff ...\n\n";
+	Session::SetSplash(str_splash);
+
 	while( 1 ) {
-		// poll all sockets for incoming data
+		// poll all sockets for incoming data and buffer
+		// also manages accepting 1 new connection per call
 		mServer->PollSockets();
 
-		std::list<Socket*> socketList = mServer->GetSocketList();
-		std::list<Socket*>::iterator iSocket;
-		Socket *pSocket;
+		std::list<Session*> sessionList = mServer->GetSessionList();
+		std::list<Session*>::iterator iSession;
+		Session *pSession;
 
 		// echo everything that each socket has sent to us
-		for( iSocket = socketList.begin(); iSocket != socketList.end(); ) {
-			pSocket = *iSocket++;
+		for( iSession = sessionList.begin(); iSession != sessionList.end(); ) {
+			pSession = *iSession++;
 
-			pSocket->Write( pSocket->GetInBuffer() );
-			pSocket->ClrInBuffer();
+		//	pSocket->
+		//	pSocket->Write( pSocket->GetInBuffer() );
+		//	pSocket->ClrInBuffer();
 		}
 
 		// flush all outgoing data

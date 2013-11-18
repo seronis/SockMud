@@ -1,36 +1,30 @@
-// ****************************************************************************
-// SocketMud II Copyright 2004 Brian Graversen
-// ****************************************************************************
-// Revision History
-// ----------------
-// 19/01/04) Initial socket code released
-// ****************************************************************************
-// This product can be used freely as long as this copyright header remains
-// intact. This header may not be removed or changed, and any work released
-// based on this code must contain this header information in all files.
-// ****************************************************************************
 
 // c headers
-#include <unistd.h>
 #include <errno.h>
+#include <unistd.h>
 
 // local headers
 #include "socket.h"
 
-Socket::Socket( int desc )
+Socket::Socket( int _id )
 {
-	control = desc;
+	sockid = _id;
 }
 
 Socket::~Socket()
 {
-	if( control != -1 )
-		close( control );
+	if( sockid != -1 )
+		close( sockid );
 }
 
-int Socket::GetControl()
+int Socket::GetSocketID()
 {
-	return control;
+	return sockid;
+}
+
+bool Socket::IsOpen()
+{
+	return sockid != -1;
 }
 
 bool Socket::Read()
@@ -39,7 +33,7 @@ bool Socket::Read()
 	int size;
 
 	while( true ) {
-		if( ( size = read( control, temp, 4096 ) ) > 0 ) {
+		if( ( size = read( sockid, temp, 4096 ) ) > 0 ) {
 
 			temp[size] = '\0';
 			inBuffer += ( std::string ) temp;
@@ -71,7 +65,7 @@ bool Socket::Flush()
 		b = ( outBuffer.length() < 4096 ) ? outBuffer.length() : 4096;
 
 		// any write failures ?
-		if( ( w = write( control, outBuffer.c_str(), b ) ) == -1 )
+		if( ( w = write( sockid, outBuffer.c_str(), b ) ) == -1 )
 			return false;
 
 		// move the buffer down
@@ -79,6 +73,16 @@ bool Socket::Flush()
 	}
 
 	return true;
+}
+
+void Socket::Close()
+{
+	ClrInBuffer();
+	ClrOutBuffer();
+	if( this->sockid != -1 ) {
+		close( this->sockid );
+		this->sockid = -1;
+	}
 }
 
 std::string Socket::GetInBuffer()
@@ -89,4 +93,9 @@ std::string Socket::GetInBuffer()
 void Socket::ClrInBuffer()
 {
 	inBuffer.erase( 0, inBuffer.length() );
+}
+
+void Socket::ClrOutBuffer()
+{
+	outBuffer.erase( 0, outBuffer.length() );
 }
