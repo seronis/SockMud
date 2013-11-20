@@ -6,25 +6,26 @@
 // local headers
 #include "socket.h"
 
-Socket::Socket( int _id )
+Socket::Socket( int a_id, Server * a_pServer )
 {
-	sockid = _id;
+	clientsockid = a_id;
+	m_pServer = a_pServer;
 }
 
 Socket::~Socket()
 {
-	if( sockid != -1 )
-		close( sockid );
+	if( clientsockid != -1 )
+		close( clientsockid );
 }
 
-int Socket::GetSocketID()
+int Socket::GetSocketID() const
 {
-	return sockid;
+	return clientsockid;
 }
 
-bool Socket::IsOpen()
+bool Socket::IsOpen() const
 {
-	return sockid != -1;
+	return clientsockid != -1;
 }
 
 bool Socket::Read()
@@ -33,7 +34,7 @@ bool Socket::Read()
 	int size;
 
 	while( true ) {
-		if( ( size = read( sockid, temp, 4096 ) ) > 0 ) {
+		if( ( size = read( clientsockid, temp, 4096 ) ) > 0 ) {
 
 			temp[size] = '\0';
 			inBuffer += ( std::string ) temp;
@@ -42,7 +43,7 @@ bool Socket::Read()
 				break;
 		} else if( size == 0 )
 			return false;
-		else if( errno == EAGAIN || size == 4096 )
+		else if( errno == EAGAIN )
 			break;
 		else
 			return false;
@@ -65,7 +66,7 @@ bool Socket::Flush()
 		b = ( outBuffer.length() < 4096 ) ? outBuffer.length() : 4096;
 
 		// any write failures ?
-		if( ( w = write( sockid, outBuffer.c_str(), b ) ) == -1 )
+		if( ( w = write( clientsockid, outBuffer.c_str(), b ) ) == -1 )
 			return false;
 
 		// move the buffer down
@@ -79,10 +80,15 @@ void Socket::Close()
 {
 	ClrInBuffer();
 	ClrOutBuffer();
-	if( this->sockid != -1 ) {
-		close( this->sockid );
-		this->sockid = -1;
+	if( this->clientsockid != -1 ) {
+		close( this->clientsockid );
+		this->clientsockid = -1;
 	}
+}
+
+Server * Socket::GetServer()
+{
+	return m_pServer;
 }
 
 std::string Socket::GetInBuffer()

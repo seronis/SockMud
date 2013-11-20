@@ -110,17 +110,14 @@ void Server::FlushSockets()
 // like 4, 5, 8 or 10. This is the amount of "commands" that will
 // be processed each second, and it is recommended to have a
 // constant defined for this purpose.
-void Server::Sleep( int tps )
+void Server::Sleep( )
 {
-	//how many ticks per second do we want?
-	if( tps <= 0 )	return;
-
 	struct timeval newTime;
 	gettimeofday( &newTime, NULL );
 
 	// calculate exact amount of time we need to sleep
 	int secs, usecs;
-	usecs = ( int )( lastSleep.tv_usec -  newTime.tv_usec ) + 1000000 / tps;
+	usecs = ( int )( lastSleep.tv_usec -  newTime.tv_usec ) + 1000000 / tps_rate;
 	secs  = ( int )( lastSleep.tv_sec  -  newTime.tv_sec );
 
 	while( usecs < 0 ) {
@@ -171,7 +168,7 @@ void Server::Accept()
 
 	// allocate a new socket and set non-blocking I/O
 	int opt_on = 1;
-	Socket * pSocket = new Socket( clientsockid );
+	Socket * pSocket = new Socket( clientsockid, this );
 	ioctl( clientsockid, FIONBIO, &opt_on );
 
 	// allocate a new session and turn ownership of the socket over to it
@@ -193,4 +190,11 @@ std::list<Socket*> Server::GetSocketList()
 std::list<Session*> Server::GetSessionList()
 {
 	return sessionList;
+}
+
+void Server::SetTicksPerSecond( int _tps )
+{
+	if( _tps <= 0 || _tps > 100 )	_tps = 20;
+
+	this->tps_rate = _tps;
 }

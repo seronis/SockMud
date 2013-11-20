@@ -5,27 +5,31 @@
 // c++ headers
 #include <string>
 
+class Server;
+
 class Socket
 {
 public:
-	Socket( int desc );
+	Socket( int desc, Server * a_pServer );
 	~Socket( void );
 
-	bool                 Read( void );
-	void                 Write( std::string txt );
-	bool                 Flush( void );
-	void                 Close( void );
-	bool                 IsOpen( void );
+	bool			Read( void );
+	void			Write( std::string txt );
+	bool			Flush( void );
+	void			Close( void );
+	bool			IsOpen( void ) const;
 
-	int                  GetSocketID( void );
-	std::string          GetInBuffer( void );
-	void                 ClrInBuffer( void );
-	void                 ClrOutBuffer( void );
+	Server *		GetServer( void );
+	int				GetSocketID( void ) const;
+	std::string		GetInBuffer( void );
+	void			ClrInBuffer( void );
+	void			ClrOutBuffer( void );
 
 private:
-	int                  sockid;
-	std::string          inBuffer;
-	std::string          outBuffer;
+	int				clientsockid;
+	Server * 		m_pServer;
+	std::string		inBuffer;
+	std::string		outBuffer;
 };
 
 #endif

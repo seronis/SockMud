@@ -14,6 +14,7 @@ class SessionData
 	private:
 		std::string acctname;
 		std::string nickname;
+		std::string password;
 };
 
 class Session
@@ -23,12 +24,17 @@ class Session
 		~Session();
 
 		static void SetSplash( std::string msg );
+		void Process( void );
+		void Write( std::string _str );
 	private:
 		static std::string splash;
 		SessionData::state state;
 		Socket * m_pSocket;
+		Server * m_pServer;
 		std::string acctname;	//used as the 'login'. not visible to players
 		std::string nickname;	//visible to other players
+		std::string inbuffer;	//entire input so far received from socket
+		std::string last_cmd;	//latest 'line' popped from inbuffer
 };
 
 #endif // SESSION_H
