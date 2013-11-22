@@ -1,14 +1,12 @@
 # Projet specific files
 SockMud.depend
 SockMud.layout
-SockMud.cbp
 Mud.depend
 Mud.layout
-Mud.cbp
-bin/Debug/*
-obj/Debug/*
-bin/Release/*
-obj/Release/*
+dev/bin/Debug/*
+dev/obj/Debug/*
+dev/bin/Release/*
+dev/obj/Release/*
 
 # Object files
 *.o

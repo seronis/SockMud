@@ -1,0 +1,11 @@
+SockMud/data directory
+
+This will be the root directory for holding all non code specific data
+
+* account information
+* character data
+* logs files
+* area files
+* note data
+
+Each data type will reside in its own subfolder and not in this root folder

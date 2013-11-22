@@ -1,0 +1,4 @@
+SockMud/config directory
+
+Any configuration meant to override code specific defaults should be located in its own file in a subdirectory located in this root directory.
+
