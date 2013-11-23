@@ -17,11 +17,14 @@ Session::~Session()
 	if( this->m_pSocket != nullptr ) {
 		if( m_pSocket->IsOpen() ) {
 			//TODO: proper logging
-			std::cerr << "ERROR: session being destructed while socket still open.\n";
+			std::cerr << "BUG: session being destructed while socket still open.\n";
 			m_pServer->CloseSocket( m_pSocket );
 		}
 
 		delete m_pSocket;
+	} else {
+		//TODO: proper logging
+		std::cerr << "BUG: session being destructed with no socket attached.\n";
 	}
 }
 
@@ -33,7 +36,8 @@ void Session::SetSplash( std::string msg )
 
 void Session::Write( std::string _str )
 {
-	m_pSocket->Write( _str );
+	if( m_pSocket->IsOpen() )
+		m_pSocket->Write( _str );
 }
 
 void Session::Process()
@@ -105,8 +109,17 @@ void Session::Process()
 			return;
 		}
 
-	case SessionData::login_complete:
 	default: {
+			//NOTE: the default case currently has no break so it 'falls through' to
+			//	the login_complete state for now. We still need to realize we forgot
+			//	to properly handle a connected state that we assigned somewhere.
+
+			//TODO: proper logging
+			std::cerr << "BUG: pSession->Process() detected unhandled state.\n";
+			//assign state so that the bug msg only displays once per bad socket
+			state = SessionData::login_complete;
+		}
+	case SessionData::login_complete: {
 			if( cmdFound == false ) {
 				return;
 			}
