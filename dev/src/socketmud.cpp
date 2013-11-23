@@ -1,9 +1,10 @@
-
 #include <string>
 #include <iostream>
 
 #include "server.h"
 #include "session.h"
+
+bool gameClosing = false;
 
 int main( int argc, char** argv )
 {
@@ -23,18 +24,19 @@ int main( int argc, char** argv )
 	}
 
 	Server *mServer = new Server();
+
 	if( mServer->Listen( port ) == false )
 		return 1;
 
-	mServer->SetTicksPerSecond(5);
+	mServer->SetTicksPerSecond( 5 );
 
 	std::string str_splash;
 	str_splash += "Welcome to the server.\n";
 	str_splash += "  - \n";
 	str_splash += "     and stuff ...\n\n";
-	Session::SetSplash(str_splash);
+	Session::SetSplash( str_splash );
 
-	while( 1 ) {
+	while( !gameClosing && !mServer->GetSocketList().empty() ) {
 		// Poll all sockets for incoming data and buffer.
 		// Also manages accepting 1 new connection per call from listener.
 		mServer->PollSockets();
@@ -42,6 +44,7 @@ int main( int argc, char** argv )
 		Session *pSession;
 		std::list<Session*>::iterator iSession;
 		std::list<Session*> sessionList = mServer->GetSessionList();
+
 		for( iSession = sessionList.begin(); iSession != sessionList.end(); ) {
 			pSession = *iSession++;
 			pSession->Process();
@@ -54,6 +57,6 @@ int main( int argc, char** argv )
 		mServer->Sleep();
 	}
 
-	std::printf("\nERROR: we should never actually get here. Yell at seronis!!!");
-	return 1;
+	std::printf( "\nERROR: Game over man.. GAME OVER!!!\n" );
+	return 0;
 }
