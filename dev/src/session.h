@@ -24,17 +24,19 @@ private:
 class Session
 {
 public:
-	Session( Socket * a_sock );
+	Session( Socket * _sock );
 	~Session();
 
-	static void SetSplash( std::string msg );
-	void Process( void );
+	static void SetSplash( std::string _msg );
 	void Write( std::string _str );
+	void Process( void );
+
+	Socket * m_pSocket;
+	Server * m_pServer;
+
 private:
 	static std::string splash;
 	SessionData::state state;
-	Socket * m_pSocket;
-	Server * m_pServer;
 	std::string acctname;	//used as the 'login'. not visible to players
 	std::string nickname;	//visible to other players
 	std::string inbuffer;	//entire input so far received from socket

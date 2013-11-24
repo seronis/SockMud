@@ -36,7 +36,7 @@ int main( int argc, char** argv )
 	str_splash += "     and stuff ...\n\n";
 	Session::SetSplash( str_splash );
 
-	while( !gameClosing && !mServer->GetSocketList().empty() ) {
+	while( !gameClosing || !mServer->GetSocketList().empty() ) {
 		// Poll all sockets for incoming data and buffer.
 		// Also manages accepting 1 new connection per call from listener.
 		mServer->PollSockets();

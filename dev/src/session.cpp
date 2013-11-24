@@ -100,6 +100,11 @@ void Session::Process()
 				return;
 			}
 
+			//TODO: properly format/validate name given by player
+			//		if bad name: inform user, purge last_cmd, return
+			//		if good name: store name, continue processing
+			this->nickname = last_cmd;
+
 			std::string msg = "\nHi -USERNAME-, we are gonna drop you into Echo mode now.  Enjoy!!\n";
 			int pos = msg.find( "USERNAME" );
 			msg.replace( pos, 8, last_cmd );
@@ -119,6 +124,7 @@ void Session::Process()
 			//assign state so that the bug msg only displays once per bad socket
 			state = SessionData::login_complete;
 		}
+
 	case SessionData::login_complete: {
 			if( cmdFound == false ) {
 				return;

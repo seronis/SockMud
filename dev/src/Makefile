@@ -49,7 +49,7 @@ install: $(BIN_DIR_R)/$(EXE)
 
 clean:
 	rm -f *.o *.*~ *.bak *.orig *.save
-	rm -f $(OBJ_DIR_D)/*
-	rm -f $(OBJ_DIR_R)/*
-	rm -f $(BIN_DIR_D)/*
-	rm -f $(BIN_DIR_R)/*
+	rm -rf $(OBJ_DIR_D)/*
+	rm -rf $(OBJ_DIR_R)/*
+	rm -rf $(BIN_DIR_D)/*
+	rm -rf $(BIN_DIR_R)/*
